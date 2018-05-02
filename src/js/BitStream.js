@@ -19,15 +19,8 @@ var Tables = require('./Tables.js');
 var Encoder = require('./Encoder.js');
 var LameInternalFlags = require('./LameInternalFlags.js');
 
-BitStream.EQ = function (a, b) {
-    return (Math.abs(a) > Math.abs(b)) ? (Math.abs((a) - (b)) <= (Math
-        .abs(a) * 1e-6))
-        : (Math.abs((a) - (b)) <= (Math.abs(b) * 1e-6));
-};
-
-BitStream.NEQ = function (a, b) {
-    return !BitStream.EQ(a, b);
-};
+var LameConstants = require('./LameConstants.js');
+var BitHelpers = require('./BitHelpers.js');
 
 function BitStream() {
     var self = this;
@@ -114,7 +107,7 @@ function BitStream() {
             if (bufBitIdx == 0) {
                 bufBitIdx = 8;
                 bufByteIdx++;
-                assert(bufByteIdx < Lame.LAME_MAXMP3BUFFER);
+                assert(bufByteIdx < LameConstants.LAME_MAXMP3BUFFER);
                 assert(gfc.header[gfc.w_ptr].write_timing >= totbit);
                 if (gfc.header[gfc.w_ptr].write_timing == totbit) {
                     putheader_bits(gfc);
@@ -147,7 +140,7 @@ function BitStream() {
             if (bufBitIdx == 0) {
                 bufBitIdx = 8;
                 bufByteIdx++;
-                assert(bufByteIdx < Lame.LAME_MAXMP3BUFFER);
+                assert(bufByteIdx < LameConstants.LAME_MAXMP3BUFFER);
                 buf[bufByteIdx] = 0;
             }
 
@@ -780,7 +773,7 @@ function BitStream() {
         /* save the ReplayGain value */
         if (gfc.findReplayGain) {
             var RadioGain = ga.GetTitleGain(gfc.rgdata);
-            assert(NEQ(RadioGain, GainAnalysis.GAIN_NOT_ENOUGH_SAMPLES));
+            assert(BitHelpers.NEQ(RadioGain, GainAnalysis.GAIN_NOT_ENOUGH_SAMPLES));
             gfc.RadioGain = Math.floor(RadioGain * 10.0 + 0.5) | 0;
             /* round to nearest */
         }
@@ -793,7 +786,7 @@ function BitStream() {
 
             if (gfc.noclipGainChange > 0) {
                 /* clipping occurs */
-                if (EQ(gfp.scale, 1.0) || EQ(gfp.scale, 0.0))
+                if (BitHelpers.EQ(gfp.scale, 1.0) || BitHelpers.EQ(gfp.scale, 0.0))
                     gfc.noclipScale = (Math
                         .floor((32767.0 / gfc.PeakSample) * 100.0) / 100.0);
                 /* round down */
@@ -1009,7 +1002,7 @@ function BitStream() {
     };
 
     this.init_bit_stream_w = function (gfc) {
-        buf = new_byte(Lame.LAME_MAXMP3BUFFER);
+        buf = new_byte(LameConstants.LAME_MAXMP3BUFFER);
 
         gfc.h_ptr = gfc.w_ptr = 0;
         gfc.header[gfc.h_ptr].write_timing = 0;

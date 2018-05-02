@@ -14,6 +14,8 @@ var new_int = common.new_int;
 var new_int_n = common.new_int_n;
 var assert = common.assert;
 
+var MPEGMode = require('./MPEGMode.js');
+
 /**
  * ENCDELAY The encoder delay.
  *

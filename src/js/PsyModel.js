@@ -158,6 +158,8 @@ var assert = common.assert;
 var FFT = require("./FFT.js");
 var Encoder = require("./Encoder.js");
 
+var MPEGMode = require("./MPEGMode.js");
+
 function PsyModel() {
 
     var fft = new FFT();

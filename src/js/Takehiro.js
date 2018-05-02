@@ -46,7 +46,6 @@ var Tables = require('./Tables.js');
 var GrInfo = require('./GrInfo.js');
 var QuantizePVT = require('./QuantizePVT.js');
 
-
 function Takehiro() {
 
     var qupvt = null;

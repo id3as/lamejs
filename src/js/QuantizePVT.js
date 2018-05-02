@@ -44,6 +44,8 @@ var Encoder = require('./Encoder.js');
 var MeanBits = require('./MeanBits.js');
 var LameInternalFlags = require('./LameInternalFlags.js');
 
+var BitHelpers = require('./BitHelpers.js');
+
 QuantizePVT.Q_MAX = (256 + 1);
 QuantizePVT.Q_MAX2 = 116;
 QuantizePVT.LARGE_BITS = 100000;
@@ -641,7 +643,7 @@ function QuantizePVT() {
         if (cod_info.block_type != Encoder.SHORT_TYPE) {
             // NORM, START or STOP type, but not SHORT
             var k = 576;
-            while (k-- != 0 && BitStream.EQ(xr[k], 0)) {
+            while (k-- != 0 && BitHelpers.EQ(xr[k], 0)) {
                 max_nonzero = k;
             }
         }

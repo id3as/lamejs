@@ -21,13 +21,14 @@ var LameInternalFlags = require('./LameInternalFlags.js');
 var ATH = require('./ATH.js');
 var ReplayGain = require('./ReplayGain.js');
 var CBRNewIterationLoop = require('./CBRNewIterationLoop.js');
-var BitStream = require('./BitStream.js');
 var Tables = require('./Tables.js');
 var Encoder = require('./Encoder.js');
 
+var MPEGMode = require('./MPEGMode.js');
+var BitHelpers = require('./BitHelpers.js');
+
 function Lame() {
     var self = this;
-    var LAME_MAXALBUMART = (128 * 1024);
 
     Lame.V9 = 410;
     Lame.V8 = 420;
@@ -50,14 +51,6 @@ function Lame() {
     Lame.EXTREME_FAST = 1005;
     Lame.MEDIUM = 1006;
     Lame.MEDIUM_FAST = 1007;
-
-    /**
-     * maximum size of mp3buffer needed if you encode at most 1152 samples for
-     * each call to lame_encode_buffer. see lame_encode_buffer() below
-     * (LAME_MAXMP3BUFFER is now obsolete)
-     */
-    var LAME_MAXMP3BUFFER = (16384 + LAME_MAXALBUMART);
-    Lame.LAME_MAXMP3BUFFER = LAME_MAXMP3BUFFER;
 
     var ga;
     var bs;
@@ -779,7 +772,7 @@ function Lame() {
 
         if (gfp.VBR == VbrMode.vbr_off && gfp.brate == 0) {
             /* no bitrate or compression ratio specified, use 11.025 */
-            if (BitStream.EQ(gfp.compression_ratio, 0))
+            if (BitHelpers.EQ(gfp.compression_ratio, 0))
                 gfp.compression_ratio = 11.025;
             /*
              * rate to compress a CD down to exactly 128000 bps
@@ -1550,7 +1543,7 @@ function Lame() {
         /* Apply user defined re-scaling */
 
         /* user selected scaling of the samples */
-        if (BitStream.NEQ(gfp.scale, 0) && BitStream.NEQ(gfp.scale, 1.0)) {
+        if (BitHelpers.NEQ(gfp.scale, 0) && BitHelpers.NEQ(gfp.scale, 1.0)) {
             for (i = 0; i < nsamples; ++i) {
                 in_buffer[0][i] *= gfp.scale;
                 if (gfc.channels_out == 2)
@@ -1559,16 +1552,16 @@ function Lame() {
         }
 
         /* user selected scaling of the channel 0 (left) samples */
-        if (BitStream.NEQ(gfp.scale_left, 0)
-            && BitStream.NEQ(gfp.scale_left, 1.0)) {
+        if (BitHelpers.NEQ(gfp.scale_left, 0)
+            && BitHelpers.NEQ(gfp.scale_left, 1.0)) {
             for (i = 0; i < nsamples; ++i) {
                 in_buffer[0][i] *= gfp.scale_left;
             }
         }
 
         /* user selected scaling of the channel 1 (right) samples */
-        if (BitStream.NEQ(gfp.scale_right, 0)
-            && BitStream.NEQ(gfp.scale_right, 1.0)) {
+        if (BitHelpers.NEQ(gfp.scale_right, 0)
+            && BitHelpers.NEQ(gfp.scale_right, 1.0)) {
             for (i = 0; i < nsamples; ++i) {
                 in_buffer[1][i] *= gfp.scale_right;
             }

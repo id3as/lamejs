@@ -50,6 +50,8 @@ var Encoder = require('./Encoder.js');
 var GrInfo = require('./GrInfo.js');
 var L3Side = require('./L3Side.js');
 
+var BitHelpers = require('./BitHelpers.js');
+
 function Quantize() {
     var bs;
     this.rv = null;
@@ -408,7 +410,7 @@ function Quantize() {
                 continue;
 
             Arrays.sort(work, j - width, width);
-            if (BitStream.EQ(work[j - 1], 0.0))
+            if (BitHelpers.EQ(work[j - 1], 0.0))
                 continue;
             /* all zero sfb */
 
@@ -418,7 +420,7 @@ function Quantize() {
             do {
                 var noise;
                 for (nsame = 1; start + nsame < width; nsame++)
-                    if (BitStream.NEQ(work[start + j - width], work[start + j
+                    if (BitHelpers.NEQ(work[start + j - width], work[start + j
                         + nsame - width]))
                         break;
 
@@ -432,7 +434,7 @@ function Quantize() {
                 allowedNoise -= noise;
                 start += nsame;
             } while (start < width);
-            if (BitStream.EQ(trancateThreshold, 0.0))
+            if (BitHelpers.EQ(trancateThreshold, 0.0))
                 continue;
 
             do {
@@ -508,7 +510,7 @@ function Quantize() {
                 better = calc.over_count < best.over_count
                     || (calc.over_count == best.over_count && calc.over_noise < best.over_noise)
                     || (calc.over_count == best.over_count
-                    && BitStream.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise);
+                    && BitHelpers.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise);
                 break;
 
             case 8:
@@ -542,11 +544,11 @@ function Quantize() {
                 break;
             case 5:
                 better = calc.over_noise < best.over_noise
-                    || (BitStream.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise);
+                    || (BitHelpers.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise);
                 break;
             case 6:
                 better = calc.over_noise < best.over_noise
-                    || (BitStream.EQ(calc.over_noise, best.over_noise) && (calc.max_noise < best.max_noise || (BitStream
+                    || (BitHelpers.EQ(calc.over_noise, best.over_noise) && (calc.max_noise < best.max_noise || (BitHelpers
                         .EQ(calc.max_noise, best.max_noise) && calc.tot_noise <= best.tot_noise)));
                 break;
             case 7:
