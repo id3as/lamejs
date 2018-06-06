@@ -133,6 +133,10 @@ function Mp3Encoder(channels, samplerate, kbps) {
         var _sz = lame.lame_encode_flush(gfp, mp3buf, 0, mp3buf_size);
         return new Int8Array(mp3buf.subarray(0, _sz));
     };
+
+  this.getFrameNum = function() {
+    return gfp.frameNum;
+  }
 }
 
 function WavHeader() {
